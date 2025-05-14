@@ -1,0 +1,22 @@
+<div class="login-container">
+  <div class="login-title">Iniciar Sesión</div>
+  <form nz-form (ngSubmit)="login()" [formGroup]="loginForm">
+    <nz-form-item>
+      <nz-form-control>
+        <input nz-input formControlName="username" placeholder="Usuario" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control>
+        <input nz-input type="password" formControlName="password" placeholder="Contraseña" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control>
+        <button nz-button nzType="primary" class="login-button" [disabled]="loginForm.invalid">Ingresar</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</div>
