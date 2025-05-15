@@ -1,1 +1,28 @@
-<p>caballeros works!</p>
+<div class="container" style="padding: 24px; height: calc(100vh - 64px); position: relative;">
+  <div class="scroll-container">
+    <div nz-row [nzGutter]="[16, 16]">
+      <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" *ngFor="let prenda of prendas">
+        <nz-card 
+          [nzCover]="coverTemplate"
+          [nzActions]="[actionInfo]"
+          style="cursor: pointer;"
+          (click)="mostrarDetalles(prenda)">
+          <ng-template #coverTemplate>
+            <img [alt]="prenda.nombre" [src]="prenda.imagen" style="height: 200px; object-fit: cover;"/>
+          </ng-template>
+          <ng-template #actionInfo>
+            <span>Ver detalles</span>
+          </ng-template>
+          <nz-card-meta
+            [nzTitle]="prenda.nombre"
+            [nzDescription]="'$' + prenda.precio">
+          </nz-card-meta>
+        </nz-card>
+      </div>
+    </div>
+  </div>
+  <button nz-button nzType="primary" class="floating-button" (click)="mostrarModalNuevaPrenda()">
+    <span nz-icon nzType="plus"></span>
+    Nueva Prenda
+  </button>
+</div>
