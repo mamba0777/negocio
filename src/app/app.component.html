@@ -11,7 +11,7 @@
     <div class="sidebar-logo">
       <a href="" target="_blank">
         <img src="https://static.vecteezy.com/system/resources/previews/018/795/372/non_2x/fitness-and-gym-logo-free-png.png" alt="logo">
-        <h1>GIMNASIO</h1>
+        <h1>FITSPORT</h1>
       </a>
     </div>
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
@@ -20,18 +20,37 @@
           <li nz-menu-item nzMatchRouter>
             <a routerLink="/welcome">Welcome</a>
           </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Maquinas</a>
-          </li>
         </ul>
       </li>
+
+      <li nz-submenu nzOpen nzTitle="Tienda" nzIcon="shop">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/maquinas">Maquinas</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/suplementos">Suplementos</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/gashets">Gashets</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/caballeros">Caballeros</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/damas">Damas</a>
+          </li>
+        </ul> 
+      </li>
+
       <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
         <ul>
           <li nz-menu-item nzMatchRouter>
-            <a>Basic Form</a>
+            <a routerLink="/registro">Registro</a>
           </li>
         </ul>
       </li>
+
     </ul>
   </nz-sider>
   <nz-layout>
