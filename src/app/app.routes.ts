@@ -9,5 +9,6 @@ export const routes: Routes = [
   { path: 'gashets', loadChildren: () => import('./pages/gashets/gashets.routes').then(m => m.GASHETS_ROUTES) },
   { path: 'caballeros', loadChildren: () => import('./pages/caballeros/caballeros.routes').then(m => m.CABALLEROS_ROUTES) },
   { path: 'damas', loadChildren: () => import('./pages/damas/damas.routes').then(m => m.DAMAS_ROUTES) },
-  // { path: 'registro', loadChildren: () => import('./pages/registro/registro.routes').then(m => m.REGISTRO_ROUTES) }
+  { path: 'carrito', loadChildren: () => import('./pages/carrito/carriito.routes').then(m => m.CARROTI_ROUTES) },
+  { path: 'registro', loadChildren: () => import('./pages/registro/registro.routes').then(m => m.REGISTRO_ROUTES) }
 ];

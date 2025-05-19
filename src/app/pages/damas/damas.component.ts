@@ -9,6 +9,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { FormsModule } from '@angular/forms';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-damas',
@@ -36,10 +37,10 @@ export class DamasComponent {
     },
   ];
 
-  constructor(private modal: NzModalService) {}
+  constructor(private router: Router, private modalService: NzModalService) {}
 
   mostrarModalNuevaPrenda(): void {
-    this.modal.create({
+    this.modalService.create({
       nzTitle: 'Publicar Nueva Prenda',
       nzContent: `
         <form style="padding: 20px 0;">
@@ -73,25 +74,25 @@ export class DamasComponent {
       nzFooter: [
         {
           label: 'Cancelar',
-          onClick: () => this.modal.closeAll()
+          onClick: () => this.modalService.closeAll()
         },
         {
           label: 'Publicar',
           type: 'primary',
           onClick: () => {
-            this.modal.closeAll();
+            this.modalService.closeAll();
           }
         }
       ]
     });
   }
 
-  mostrarDetalles(prenda: any): void {
-    this.modal.create({
+  mostrarDetalles(prenda: any) {
+    this.modalService.create({
       nzTitle: prenda.nombre,
       nzContent: `
-        <div>
-          <img src="${prenda.imagen}" style="max-width: 100%; margin-bottom: 16px;">
+        <div class="modal-content">
+          <img src="${prenda.imagen}" class="modal-image">
           <p>${prenda.descripcion}</p>
           <h4>Características:</h4>
           <ul>

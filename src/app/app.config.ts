@@ -11,7 +11,6 @@ import en from '@angular/common/locales/en';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient } from '@angular/common/http';
-
 registerLocaleData(en);
 
 export const appConfig: ApplicationConfig = {

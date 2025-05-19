@@ -1,32 +1,35 @@
 <div class="container" style="padding: 24px; height: calc(100vh - 64px); position: relative;">
   <div class="section-header">
     <h1>Máquinas de Ejercicio</h1>
-    <p>Encuentra el equipo perfecto para tu entrenamiento</p>
+    <button nz-button nzType="primary" nzShape="circle" class="carrito-button" routerLink="/carrito">
+      <span nz-icon nzType="shopping-cart"></span>
+    </button>
   </div>
   <div class="scroll-container">
     <div nz-row [nzGutter]="[16, 16]">
       <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" *ngFor="let maquina of maquinas">
         <nz-card 
           [nzCover]="coverTemplate"
-          [nzActions]="[actionInfo]"
           style="cursor: pointer;"
           (click)="mostrarDetalles(maquina)">
           <ng-template #coverTemplate>
             <img [alt]="maquina.nombre" [src]="maquina.imagen" style="height: 200px; object-fit: cover;"/>
           </ng-template>
-          <ng-template #actionInfo>
-            <span>Ver detalles</span>
-          </ng-template>
           <nz-card-meta
             [nzTitle]="maquina.nombre"
             [nzDescription]="maquina.descripcion">
           </nz-card-meta>
+          <div class="card-actions">
+            <button nz-button nzType="default" nzShape="circle" (click)="$event.stopPropagation(); mostrarDetalles(maquina)">
+              <span nz-icon nzType="info-circle"></span>
+            </button>
+            <div style="margin-left: 9px;"></div>
+            <button nz-button nzType="primary" nzShape="circle" (click)="$event.stopPropagation(); agregarAlCarrito(maquina)">
+              <span nz-icon nzType="plus"></span>
+            </button>
+          </div>
         </nz-card>
       </div>
     </div>
   </div>
-  <button nz-button nzType="primary" class="floating-button" (click)="mostrarModalNuevaMaquina()">
-    <span nz-icon nzType="plus"></span>
-    Nueva Máquina
-  </button>
 </div>
