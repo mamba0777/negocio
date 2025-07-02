@@ -1,35 +1,97 @@
-<div class="container" style="padding: 24px; height: calc(100vh - 64px); position: relative;">
-  <div class="section-header">
-    <h1>Máquinas de Ejercicio</h1>
-    <button nz-button nzType="primary" nzShape="circle" class="carrito-button" routerLink="/carrito">
-      <span nz-icon nzType="shopping-cart"></span>
-    </button>
-  </div>
-  <div class="scroll-container">
-    <div nz-row [nzGutter]="[16, 16]">
-      <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" *ngFor="let maquina of maquinas">
-        <nz-card 
-          [nzCover]="coverTemplate"
-          style="cursor: pointer;"
-          (click)="mostrarDetalles(maquina)">
-          <ng-template #coverTemplate>
-            <img [alt]="maquina.nombre" [src]="maquina.imagen" style="height: 200px; object-fit: cover;"/>
-          </ng-template>
-          <nz-card-meta
-            [nzTitle]="maquina.nombre"
-            [nzDescription]="maquina.descripcion">
-          </nz-card-meta>
-          <div class="card-actions">
-            <button nz-button nzType="default" nzShape="circle" (click)="$event.stopPropagation(); mostrarDetalles(maquina)">
-              <span nz-icon nzType="info-circle"></span>
-            </button>
-            <div style="margin-left: 9px;"></div>
-            <button nz-button nzType="primary" nzShape="circle" (click)="$event.stopPropagation(); agregarAlCarrito(maquina)">
-              <span nz-icon nzType="plus"></span>
-            </button>
-          </div>
-        </nz-card>
+<div class="container mx-auto p-4">
+  <!-- Barra de búsqueda y título -->
+  <div class="mb-6 flex justify-between items-center">
+    <h1 class="text-2xl font-bold">Nuestros Productos</h1>
+    <div class="flex items-center space-x-4">
+      <div class="w-64">
+        <nz-input-group [nzSuffix]="suffixIconSearch">
+          <input 
+            nz-input 
+            placeholder="Buscar productos..." 
+            [(ngModel)]="searchText"
+            (input)="filteredProducts"
+          />
+        </nz-input-group>
+        <ng-template #suffixIconSearch>
+          <span nz-icon nzType="search" nzTheme="outline"></span>
+        </ng-template>
       </div>
+      <button 
+        nz-button 
+        nzType="primary" 
+        nzShape="circle" 
+        class="carrito-button" 
+        (click)="irAlCarrito()"
+      >
+        <span nz-icon nzType="shopping" nzTheme="outline"></span>
+      </button>
     </div>
   </div>
-</div>
+
+  <!-- Estado de carga -->
+  @if (loading()) {
+    <div class="flex justify-center items-center h-64">
+      <nz-spin nzTip="Cargando productos..."></nz-spin>
+    </div>
+  }
+
+  <!-- Mensaje de error -->
+  @if (error()) {
+    <nz-alert 
+      nzType="error" 
+      [nzMessage]="'Error'"
+      [nzDescription]="error()"
+      nzShowIcon
+      class="mb-4"
+    />
+  }
+
+  <!-- Enlace de router para resolver la advertencia -->
+  <a routerLink="/maquinas" style="display: none;">Máquinas</a>
+  
+  <!-- Lista de productos -->
+  @if (!loading() && !error()) {
+    <div nz-row [nzGutter]="[16, 16]">
+      @for (product of filteredProducts; track product.id) {
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6">
+          <nz-card 
+            [nzCover]="coverTemplate"
+            style="cursor: pointer; height: 100%;"
+            (click)="verDetalles(product)"
+          >
+            <ng-template #coverTemplate>
+              <img 
+                [alt]="product.title" 
+                [src]="product.images[0] || 'https://via.placeholder.com/300x200?text=Sin+imagen'" 
+                style="height: 200px; width: 100%; object-fit: cover;"
+                (error)="onImageError($event)"
+              />
+            </ng-template>
+            
+            <nz-card-meta
+              [nzTitle]="product.title"
+              [nzDescription]="(product.description | slice:0:100) + (product.description.length > 100 ? '...' : '')"
+            ></nz-card-meta>
+            
+            <div class="mt-4 flex justify-between items-center">
+              <span class="text-lg font-bold text-blue-600">${{product.price | number:'1.2-2'}}</span>
+              <button 
+                nz-button 
+                nzType="primary" 
+                nzShape="circle" 
+                (click)="$event.stopPropagation(); addToCart(product)"
+                nz-tooltip
+                nzTooltipTitle="Agregar al carrito"
+              >
+                <span nz-icon nzType="plus" nzTheme="outline"></span>
+              </button>
+            </div>
+          </nz-card>
+        </div>
+      } @empty {
+        <div nz-col nzSpan="24" class="text-center py-8">
+          <nz-empty nzNotFoundContent="No se encontraron productos"></nz-empty>
+        </div>
+      }
+    </div>
+  }
