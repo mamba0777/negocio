@@ -16,6 +16,14 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 
 registerLocaleData(en);
 
@@ -32,6 +40,14 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(NzSelectModule),
     importProvidersFrom(NzButtonModule),
     importProvidersFrom(NzUploadModule),
+    importProvidersFrom(NzCardModule),
+    importProvidersFrom(NzGridModule),
+    importProvidersFrom(NzModalModule),
+    importProvidersFrom(NzToolTipModule),
+    importProvidersFrom(NzEmptyModule),
+    importProvidersFrom(NzAlertModule),
+    importProvidersFrom(NzSpinModule),
+    importProvidersFrom(NzPaginationModule),
     provideAnimationsAsync(),
     provideHttpClient()
   ]
