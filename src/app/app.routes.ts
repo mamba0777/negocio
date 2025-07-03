@@ -55,5 +55,9 @@ export const routes: Routes = [
   { 
     path: 'carrito', 
     loadChildren: () => import('./pages/carrito/carriito.routes').then(m => m.CARROTI_ROUTES) 
+  },
+  { 
+    path: 'registro', 
+    loadChildren: () => import('./pages/registro/registro.routes').then(m => m.REGISTRO_ROUTES) 
   }
 ];

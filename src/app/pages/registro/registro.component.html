@@ -1,1 +1,115 @@
-<p>registro works!</p>
+<div class="container">
+  <div class="form-container">
+    <nz-card [nzTitle]="titulo()" [nzBordered]="false" class="form-card">
+      <form nz-form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form">
+        <!-- Nombre -->
+        <nz-form-item>
+          <nz-form-control nzErrorTip="Por favor ingrese su nombre">
+            <nz-input-group nzSize="large">
+              <input 
+                type="text" 
+                nz-input 
+                formControlName="nombre" 
+                [placeholder]="esRegistro() ? 'Nombre completo' : 'Nombre'"
+              />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- Email (solo para registro) -->
+        <nz-form-item *ngIf="esRegistro()">
+          <nz-form-control nzErrorTip="Por favor ingrese un correo válido">
+            <nz-input-group nzSize="large">
+              <input 
+                type="email" 
+                nz-input 
+                formControlName="email" 
+                placeholder="Correo electrónico"
+              />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- Email (solo para perfil) -->
+        <nz-form-item *ngIf="!esRegistro()">
+          <nz-form-label nzFor="email">Correo electrónico</nz-form-label>
+          <nz-form-control>
+            <input 
+              id="email"
+              type="email" 
+              nz-input 
+              [disabled]="true"
+              [value]="usuarioActual()?.email" 
+              class="disabled-input"
+            />
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- Contraseña -->
+        <nz-form-item>
+          <nz-form-control 
+            [nzErrorTip]="esRegistro() ? 'La contraseña debe tener al menos 6 caracteres' : 'La contraseña debe tener al menos 6 caracteres (opcional)'"
+          >
+            <nz-input-group nzSize="large">
+              <input 
+                [type]="passwordVisible ? 'text' : 'password'" 
+                nz-input 
+                formControlName="password" 
+                [placeholder]="esRegistro() ? 'Contraseña' : 'Nueva contraseña (opcional)'"
+              />
+              <span nz-icon 
+                [nzType]="passwordVisible ? 'eye-invisible' : 'eye'" 
+                (click)="passwordVisible = !passwordVisible"
+                class="password-toggle"
+              ></span>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- Confirmar Contraseña -->
+        <nz-form-item *ngIf="esRegistro() || form.get('password')?.value">
+          <nz-form-control nzErrorTip="Las contraseñas no coinciden">
+            <nz-input-group nzSize="large">
+              <input 
+                [type]="confirmarPasswordVisible ? 'text' : 'password'" 
+                nz-input 
+                formControlName="confirmarPassword" 
+                placeholder="Confirmar contraseña"
+              />
+              <span nz-icon 
+                [nzType]="confirmarPasswordVisible ? 'eye-invisible' : 'eye'" 
+                (click)="confirmarPasswordVisible = !confirmarPasswordVisible"
+                class="password-toggle"
+              ></span>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- Botón de envío -->
+        <button 
+          nz-button 
+          nzType="primary" 
+          nzSize="large" 
+          [nzLoading]="cargando()"
+          [disabled]="form.invalid"
+          class="submit-button"
+        >
+          {{ textoBoton() }}
+        </button>
+
+        <!-- Enlaces adicionales -->
+        <div class="form-footer">
+          <ng-container *ngIf="esRegistro(); else loginLink">
+            ¿Ya tienes una cuenta? 
+            <a routerLink="/login">Iniciar sesión</a>
+          </ng-container>
+          <ng-template #loginLink>
+            <a (click)="cerrarSesion()" class="logout-link">
+              <span nz-icon nzType="logout"></span> Cerrar sesión
+            </a>
+          </ng-template>
+        </div>
+      </form>
+    </nz-card>
+  </div>
+</div>

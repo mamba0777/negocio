@@ -1,109 +1,148 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { CommonModule, DecimalPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzGridModule } from 'ng-zorro-antd/grid';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { FormsModule } from '@angular/forms';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { Router } from '@angular/router';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ProductService } from '../../services/product.service';
+import { Product } from '../../models/product.model';
 
 @Component({
   selector: 'app-damas',
-  imports: [CommonModule, NzCardModule, NzGridModule, NzModalModule, NzButtonModule, NzFormModule, NzInputModule, FormsModule, NzIconModule],
+  imports: [
+    CommonModule, 
+    NzCardModule, 
+    NzGridModule, 
+    NzModalModule, 
+    NzButtonModule, 
+    NzFormModule, 
+    NzInputModule,
+    NzIconModule,
+    NzSpinModule,
+    NzAlertModule,
+    NzEmptyModule,
+    NzToolTipModule,
+    NzPaginationModule,
+    DecimalPipe,
+    FormsModule
+  ],
   templateUrl: './damas.component.html',
-  styleUrl: './damas.component.scss'
+  styleUrls: ['./damas.component.scss'],
+  standalone: true
 })
-export class DamasComponent {
-  prendas = [
-    {
-      id: 1,
-      nombre: 'Leggins Deportivos',
-      descripcion: 'Leggins de alta compresión para entrenamiento',
-      imagen: 'https://www.omeda.es/wp-content/uploads/2020/07/Mallas-deportivas-para-Mujer-alta-cintura-Legging-mujeres-Sexy-transpirable-Feamle-entrenamiento-Leggins-Mujer-2.jpg',
-      caracteristicas: ['Material: Poliéster y Spandex', 'Alta compresión', 'Control de humedad', 'Tallas: S, M, L'],
-      precio: 29.999
-    },
-    {
-      id: 2,
-      nombre: 'Top Deportivo',
-      descripcion: 'Top deportivo con soporte medio para ejercicio',
-      imagen: 'https://womensecret.com/on/demandware.static/-/Sites-gc-ws-master-catalog/default/dwc5df2ad4/images/hi-res/P_423265547FM.jpg',
-      caracteristicas: ['Soporte medio', 'Material transpirable', 'Diseño sin costuras', 'Tallas: S, M, L'],
-      precio: 24.999
-    },
-  ];
+export class DamasComponent implements OnInit {
+  private productService = inject(ProductService);
+  private modal = inject(NzModalService);
+  private notification = inject(NzNotificationService);
+  private router = inject(Router);
+  
+  // Señales reactivas
+  products = this.productService.products;
+  loading = this.productService.loading;
+  error = this.productService.error;
+  pagination = this.productService.pagination;
 
-  constructor(private router: Router, private modalService: NzModalService) {}
+  // Estado local
+  searchText = '';
+  searchTimeout: any = null;
+  debounceTime = 300; // 300ms de retraso para la búsqueda
+  
+  // Carrito
+  carrito = signal<Product[]>([]);
 
-  mostrarModalNuevaPrenda(): void {
-    this.modalService.create({
-      nzTitle: 'Publicar Nueva Prenda',
-      nzContent: `
-        <form style="padding: 20px 0;">
-          <div style="margin-bottom: 16px;">
-            <label>Nombre de la prenda:</label>
-            <input nz-input placeholder="Ingrese el nombre" style="width: 100%; margin-top: 8px;">
-          </div>
-          
-          <div style="margin-bottom: 16px;">
-            <label>Descripción:</label>
-            <textarea nz-input placeholder="Ingrese la descripción" style="width: 100%; margin-top: 8px;" rows="4"></textarea>
-          </div>
-          
-          <div style="margin-bottom: 16px;">
-            <label>URL de la imagen:</label>
-            <input nz-input placeholder="Ingrese la URL de la imagen" style="width: 100%; margin-top: 8px;">
-          </div>
-          
-          <div style="margin-bottom: 16px;">
-            <label>Características:</label>
-            <textarea nz-input placeholder="Ingrese las características (una por línea)" style="width: 100%; margin-top: 8px;" rows="4"></textarea>
-          </div>
+  // Página actual
+  currentPage = computed(() => {
+    return (this.pagination()?.offset / this.pagination()?.limit) + 1 || 1;
+  });
 
-          <div style="margin-bottom: 16px;">
-            <label>Precio:</label>
-            <input nz-input type="number" placeholder="Ingrese el precio" style="width: 100%; margin-top: 8px;">
-          </div>
-        </form>
-      `,
-      nzWidth: '600px',
-      nzFooter: [
-        {
-          label: 'Cancelar',
-          onClick: () => this.modalService.closeAll()
-        },
-        {
-          label: 'Publicar',
-          type: 'primary',
-          onClick: () => {
-            this.modalService.closeAll();
-          }
-        }
-      ]
-    });
+  // Computed para el mensaje de resultados
+  searchResultsMessage = computed(() => {
+    if (this.loading()) return 'Buscando productos...';
+    if (this.error()) return this.error();
+    if (this.products().length === 0) return 'No se encontraron productos';
+    return `Mostrando ${this.products().length} de ${this.pagination().total} productos`;
+  });
+  
+  constructor() {}
+  
+  ngOnInit() {
+    this.loadProducts();
   }
 
-  mostrarDetalles(prenda: any) {
-    this.modalService.create({
-      nzTitle: prenda.nombre,
-      nzContent: `
-        <div class="modal-content">
-          <img src="${prenda.imagen}" class="modal-image">
-          <p>${prenda.descripcion}</p>
-          <h4>Características:</h4>
-          <ul>
-            ${prenda.caracteristicas.map((c: string) => `<li>${c}</li>`).join('')}
-          </ul>
-          <h4>Precio:</h4>
-          <p style="font-size: 18px; color: #1890ff;">$${prenda.precio}</p>
-        </div>
-      `,
-      nzWidth: '600px',
-      nzFooter: null
+  // Cargar productos con paginación
+  loadProducts(pageIndex: number = 1): void {
+    const offset = (pageIndex - 1) * this.pagination().limit;
+    if (this.searchText.trim()) {
+      this.productService.searchProducts(this.searchText, offset, this.pagination().limit);
+    } else {
+      this.productService.loadProducts(offset, this.pagination().limit);
+    }
+  }
+
+  // Manejar búsqueda con debounce
+  onSearch(): void {
+    // Cancelar el timeout anterior si existe
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+    
+    // Establecer un nuevo timeout
+    this.searchTimeout = setTimeout(() => {
+      this.loadProducts(1); // Volver a la primera página
+    }, this.debounceTime);
+  }
+  
+  // Cambiar tamaño de página
+  onPageSizeChange(pageSize: number): void {
+    // Actualizar el límite y volver a cargar la primera página
+    this.productService.updatePagination({ limit: pageSize, offset: 0 });
+    this.loadProducts(1);
+  }
+
+  // Manejar cambio de página
+  onPageChange(page: number): void {
+    const offset = (page - 1) * this.pagination().limit;
+    this.productService.updatePagination({ offset });
+    this.loadProducts(page);
+  }
+  
+  // Agregar al carrito
+  addToCart(product: Product) {
+    this.carrito.update(items => [...items, product]);
+    this.modal.success({
+      nzTitle: '¡Producto agregado!',
+      nzContent: `${product.title} ha sido agregado al carrito.`,
+      nzOkText: 'Aceptar'
     });
+  }
+  
+  // Ver detalles del producto
+  verDetalles(product: Product) {
+    this.modal.info({
+      nzTitle: product.title,
+      nzContent: `
+        <p><strong>Descripción:</strong> ${product.description}</p>
+        <p><strong>Precio:</strong> $${product.price}</p>
+        <img src="${product.images[0]}" alt="${product.title}" style="max-width: 100%;">
+      `,
+      nzOkText: 'Cerrar'
+    });
+  }
+  
+  // Ir al carrito
+  irAlCarrito() {
+    this.router.navigate(['/carrito']);
   }
 }

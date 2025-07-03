@@ -42,7 +42,7 @@ export class ProductService {
     total: number;
   }>>({});
 
-  // Selectores (señales de solo lectura)
+  // Selectores
   products = computed(() => this.state().products);
   loading = computed(() => this.state().loading);
   error = computed(() => this.state().error);
