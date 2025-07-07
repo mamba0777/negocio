@@ -2,21 +2,21 @@
   <div class="form-container">
     <nz-card [nzTitle]="titulo()" [nzBordered]="false" class="form-card">
       <form nz-form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form">
-        <!-- Nombre -->
+       
         <nz-form-item>
           <nz-form-control nzErrorTip="Por favor ingrese su nombre">
             <nz-input-group nzSize="large">
               <input 
                 type="text" 
                 nz-input 
-                formControlName="nombre" 
+                formControlName="name" 
                 [placeholder]="esRegistro() ? 'Nombre completo' : 'Nombre'"
               />
             </nz-input-group>
           </nz-form-control>
         </nz-form-item>
 
-        <!-- Email (solo para registro) -->
+        
         <nz-form-item *ngIf="esRegistro()">
           <nz-form-control nzErrorTip="Por favor ingrese un correo válido">
             <nz-input-group nzSize="large">
@@ -30,7 +30,7 @@
           </nz-form-control>
         </nz-form-item>
 
-        <!-- Email (solo para perfil) -->
+     
         <nz-form-item *ngIf="!esRegistro()">
           <nz-form-label nzFor="email">Correo electrónico</nz-form-label>
           <nz-form-control>
@@ -45,7 +45,7 @@
           </nz-form-control>
         </nz-form-item>
 
-        <!-- Contraseña -->
+       
         <nz-form-item>
           <nz-form-control 
             [nzErrorTip]="esRegistro() ? 'La contraseña debe tener al menos 6 caracteres' : 'La contraseña debe tener al menos 6 caracteres (opcional)'"
@@ -66,7 +66,7 @@
           </nz-form-control>
         </nz-form-item>
 
-        <!-- Confirmar Contraseña -->
+      
         <nz-form-item *ngIf="esRegistro() || form.get('password')?.value">
           <nz-form-control nzErrorTip="Las contraseñas no coinciden">
             <nz-input-group nzSize="large">
@@ -85,7 +85,7 @@
           </nz-form-control>
         </nz-form-item>
 
-        <!-- Botón de envío -->
+       
         <button 
           nz-button 
           nzType="primary" 
@@ -97,11 +97,11 @@
           {{ textoBoton() }}
         </button>
 
-        <!-- Enlaces adicionales -->
+       
         <div class="form-footer">
           <ng-container *ngIf="esRegistro(); else loginLink">
             ¿Ya tienes una cuenta? 
-            <a routerLink="/login">Iniciar sesión</a>
+            <a routerLink="/">Iniciar sesión</a>
           </ng-container>
           <ng-template #loginLink>
             <a (click)="cerrarSesion()" class="logout-link">
