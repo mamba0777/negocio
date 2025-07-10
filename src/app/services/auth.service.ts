@@ -73,7 +73,11 @@ export class AuthService {
       'Accept': 'application/json'
     };
     
+<<<<<<< HEAD
     // Datos para el login segúnla API
+=======
+    // Datos para el login según la documentación de la API
+>>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
     const loginData = {
       email: email,
       password: password
@@ -114,7 +118,11 @@ export class AuthService {
             // Guardar el usuario autenticado
             this.handleAuthentication(authenticatedUser);
             
+<<<<<<< HEAD
             
+=======
+            // Redirigir al dashboard después de un inicio de sesión exitoso
+>>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
             this.router.navigate(['/welcome']);
           })
         );
@@ -285,11 +293,16 @@ export class AuthService {
   }
 
   // Método para registrar un nuevo usuario
+<<<<<<< HEAD
   register(userData: any): Observable<User> {
+=======
+  register(userData: RegisterData): Observable<User> {
+>>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
     this.isLoading.set(true);
     
     // Ajustar los datos según lo que espera la API
     const registerData = {
+<<<<<<< HEAD
       name: userData.name, 
       email: userData.email,
       password: userData.password,
@@ -301,15 +314,40 @@ export class AuthService {
       tap(user => {
         this.message.success('¡Registro exitoso!');
         // No iniciamos sesión automáticamente, el usuario debe iniciar sesión manualmente
+=======
+      name: userData.name,
+      email: userData.email,
+      password: userData.password,
+      avatar: userData.avatar || 'https://picsum.photos/800' // Usando el avatar por defecto de la documentación
+    };
+
+    // Primero creamos el usuario
+    return this.http.post<User>(`${this.API_URL}/users/`, registerData).pipe(
+      switchMap((newUser) => {
+        this.message.success('¡Registro exitoso! Iniciando sesión...');
+        // Iniciamos sesión automáticamente después del registro
+        return this.login(userData.email, userData.password).pipe(
+          catchError(error => {
+            // Si hay un error en el login después del registro, redirigir al login
+            this.message.warning('Registro exitoso, pero no se pudo iniciar sesión automáticamente');
+            this.router.navigate(['/auth/login']);
+            return throwError(() => new Error('Error al iniciar sesión después del registro'));
+          })
+        );
+>>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
       }),
       catchError((error: HttpErrorResponse) => {
         console.error('Register error:', error);
         let errorMessage = 'Error en el registro';
         
         if (error.status === 400) {
+<<<<<<< HEAD
           errorMessage = 'Datos de registro inválidos';
         } else if (error.status === 409) {
           errorMessage = 'El correo electrónico ya está registrado';
+=======
+          errorMessage = 'El correo ya está en uso';
+>>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
         } else if (error.status === 0) {
           errorMessage = 'No se pudo conectar al servidor';
         } else if (error.error?.message) {
