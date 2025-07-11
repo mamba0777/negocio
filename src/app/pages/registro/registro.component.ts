@@ -3,16 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { NzFormModule } from 'ng-zorro-antd/form';
-<<<<<<< HEAD
 import { NzModalService } from 'ng-zorro-antd/modal';
-=======
->>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzMessageService } from 'ng-zorro-antd/message';
-<<<<<<< HEAD
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -32,13 +28,6 @@ interface ApiUser {
 
 @Component({
   selector: 'app-registro',
-=======
-import { AuthService, User } from '../../services/auth.service';
-
-@Component({
-  selector: 'app-registro',
-  standalone: true,
->>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
   imports: [
     CommonModule, 
     ReactiveFormsModule, 
@@ -48,13 +37,10 @@ import { AuthService, User } from '../../services/auth.service';
     NzButtonModule, 
     NzCardModule,
     NzIconModule,
-<<<<<<< HEAD
     NzTableModule,
     NzTagModule,
     NzDividerModule,
     NzSelectModule,
-=======
->>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
     RouterModule
   ],
   templateUrl: './registro.component.html',
@@ -62,7 +48,6 @@ import { AuthService, User } from '../../services/auth.service';
 })
 export class RegistroComponent implements OnInit {
   private fb = inject(FormBuilder);
-<<<<<<< HEAD
   private http = inject(HttpClient);
   private authService = inject(AuthService);
   private message = inject(NzMessageService);
@@ -77,23 +62,11 @@ export class RegistroComponent implements OnInit {
   editandoUsuario = signal<ApiUser | null>(null);
   private formSubmitted = false;
   private isNavigatingAway = false;
-=======
-  private authService = inject(AuthService);
-  private message = inject(NzMessageService);
-  private router = inject(Router);
-
-  // Estado del componente
-  modo = signal<'registro' | 'perfil'>('registro');
-  cargando = signal(false);
-  usuarioActual = signal<User | null>(null);
-  passwordVisible = false;
-  confirmarPasswordVisible = false;
->>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
 
   // Formulario reactivo
   form!: FormGroup;
 
-<<<<<<< HEAD
+
   // Estado para la tabla de usuarios
   listOfData: ApiUser[] = [];
   loading = signal(false);
@@ -192,47 +165,19 @@ export class RegistroComponent implements OnInit {
   }
 
   private inicializarFormulario(): void {
-=======
-  // Computed properties
-  esRegistro = computed(() => this.modo() === 'registro');
-  titulo = computed(() => this.esRegistro() ? 'Crear Cuenta' : 'Mi Perfil');
-  textoBoton = computed(() => this.esRegistro() ? 'Registrarse' : 'Guardar Cambios');
-
-  ngOnInit(): void {
-    // Verificar si el usuario está autenticado para determinar el modo
-    const usuario = this.authService.user();
-    if (usuario) {
-      this.modo.set('perfil');
-      this.usuarioActual.set(usuario);
-      this.inicializarFormularioPerfil(usuario);
-    } else {
-      this.inicializarFormularioRegistro();
-    }
-  }
-
-  private inicializarFormularioRegistro(): void {
->>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [
         Validators.required, 
-<<<<<<< HEAD
         Validators.minLength(6)
       ]],
       confirmarPassword: ['', [Validators.required]],
       role: ['customer', [Validators.required]],
-=======
-        Validators.minLength(6),
-        this.passwordStrengthValidator()
-      ]],
-      confirmPassword: ['', [Validators.required]],
->>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
       avatar: ['https://api.lorem.space/image/face?w=150&h=150'] // Avatar por defecto
     }, { validators: this.passwordMatchValidator() });
   }
 
-<<<<<<< HEAD
   private passwordStrengthValidator(): any {
     return (control: AbstractControl): ValidationErrors | null => {
       const password = control.value;
@@ -240,30 +185,6 @@ export class RegistroComponent implements OnInit {
       // Solo verificamos que tenga al menos 6 caracteres
       if (password && password.length < 6) {
         return { minlength: { requiredLength: 6, actualLength: password.length } };
-=======
-  private inicializarFormularioPerfil(usuario: User): void {
-    this.form = this.fb.group({
-      name: [usuario?.name || '', [Validators.required, Validators.minLength(3)]],
-      email: [
-        { value: usuario?.email || '', disabled: true },
-        [Validators.required, Validators.email]
-      ],
-      password: ['', [Validators.minLength(6)]],
-      confirmPassword: [''],
-      avatar: [usuario?.avatar || 'https://api.lorem.space/image/face?w=150&h=150']
-    }, { validators: this.passwordMatchValidator() });
-  }
-
-  private passwordStrengthValidator(): any {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const password = control.value;
-      const hasLetter = /[a-zA-Z]/.test(password);
-      const hasNumber = /\d/.test(password);
-      const hasSpecialCharacter = /[!@#$%^&*()_+\-=\]{};':"\\|,.<>?]/.test(password);
-
-      if (!hasLetter || !hasNumber || !hasSpecialCharacter) {
-        return { passwordStrength: true };
->>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
       }
 
       return null;
@@ -271,25 +192,15 @@ export class RegistroComponent implements OnInit {
   }
 
   private passwordMatchValidator() {
-<<<<<<< HEAD
     return (formGroup: AbstractControl): ValidationErrors | null => {
       const password = formGroup.get('password');
       const confirmarPassword = formGroup.get('confirmarPassword');
 
       if (!password || !confirmarPassword) {
-=======
-    return (control: AbstractControl): ValidationErrors | null => {
-      const formGroup = control as FormGroup;
-      const password = formGroup.get('password');
-      const confirmPassword = formGroup.get('confirmPassword');
-
-      if (!password || !confirmPassword) {
->>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
         return null;
       }
 
       const passwordValue = password.value;
-<<<<<<< HEAD
       const confirmarPasswordValue = confirmarPassword.value;
 
       // Si estamos editando un usuario y ambos campos de contraseña están vacíos, no mostrar error
@@ -322,27 +233,8 @@ export class RegistroComponent implements OnInit {
     if (this.cargando()) {
       return;
     }
-
+    
     // Marcar todos los controles como touched para mostrar errores
-=======
-      const confirmPasswordValue = confirmPassword.value;
-
-      // Si estamos en modo edición y ambos campos están vacíos, no mostrar error
-      if (this.modo() === 'perfil' && !passwordValue && !confirmPasswordValue) {
-        return null;
-      }
-
-      // Si estamos en modo registro o se está cambiando la contraseña
-      if (passwordValue !== confirmPasswordValue) {
-        return { mismatch: true };
-      }
-
-      return null;
-    };
-  }
-
-  onSubmit(): void {
->>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
     if (this.form.invalid) {
       Object.values(this.form.controls).forEach(control => {
         if (control.invalid) {
@@ -354,7 +246,6 @@ export class RegistroComponent implements OnInit {
     }
 
     this.cargando.set(true);
-<<<<<<< HEAD
     this.formSubmitted = true;
 
     if (this.editandoUsuario()) {
@@ -388,16 +279,7 @@ export class RegistroComponent implements OnInit {
     });
   }
 
-=======
 
-    if (this.esRegistro()) {
-      this.registrarUsuario();
-    } else {
-      this.actualizarPerfil();
-    }
-  }
-
->>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
   private registrarUsuario(): void {
     const { confirmPassword, ...userData } = this.form.value;
     
@@ -422,16 +304,10 @@ export class RegistroComponent implements OnInit {
     const { confirmPassword, ...updates } = this.form.value;
     
     this.authService.updateProfile(updates).subscribe({
-<<<<<<< HEAD
       next: () => {
         this.message.success('Perfil actualizado correctamente');
         this.volverALista();
         this.cargarUsuarios();
-=======
-      next: (usuario) => {
-        this.usuarioActual.set(usuario);
-        this.message.success('Perfil actualizado correctamente');
->>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
       },
       error: (error) => {
         console.error('Error al actualizar perfil:', error);
@@ -450,7 +326,3 @@ export class RegistroComponent implements OnInit {
     this.router.navigate(['/']);
   }
 }
-<<<<<<< HEAD
- 
-=======
->>>>>>> 85f4d38b45d1c70def789b25db2005f90f9b03de
